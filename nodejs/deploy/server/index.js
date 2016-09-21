@@ -1,1 +1,77 @@
-console.log("hello pakistani");
+/// <reference path="./../typings/tsd.d.ts" />
+var express = require('express');
+var app = express();
+var mysql = require('mysql');
+var pool = mysql.createPool({
+    connectionLimit: 100,
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'picreatix',
+    debug: false
+});
+function handle_database(req, res) {
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            connection.release();
+            res.json({ "code": 100, "status": "Error in connection database" });
+            return;
+        }
+        console.log('connected as id ' + connection.threadId);
+        connection.query("select * from migration", function (err, rows) {
+            connection.release();
+            if (!err) {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function (err) {
+            res.json({ "code": 100, "status": "Error in connection database" });
+            return;
+        });
+    });
+}
+//  connection.connect(function(err){
+//  if(!err) {
+//      console.log("Database is connected ... \n\n");  
+//  } else {
+//      console.log("Error connecting database ... \n\n");  
+//  }
+//  });
+//  connection.query('SELECT * from migration', function(err, rows, fields) {
+//    if (!err)
+//      console.log('The solution is: ', rows);
+//    else
+//      console.log('Error while performing Query.');
+//  });
+//  connection.end();
+// This responds with "Hello World" on the homepage
+app.get('/', function (req, res) {
+    console.log("Got a GET request for the homepage");
+    //    res.send('Hello GET');
+    handle_database(req, res);
+});
+// This responds a POST request for the homepage
+app.post('/', function (req, res) {
+    console.log("Got a POST request for the homepage");
+    res.send('Hello POST');
+});
+// This responds a DELETE request for the /del_user page.
+app.delete('/del_user', function (req, res) {
+    console.log("Got a DELETE request for /del_user");
+    res.send('Hello DELETE');
+});
+// This responds a GET request for the /list_user page.
+app.get('/list_user', function (req, res) {
+    console.log("Got a GET request for /list_user");
+    res.send('Page Listing');
+});
+// This responds a GET request for abcd, abxcd, ab123cd, and so on
+app.get('/ab*cd', function (req, res) {
+    console.log("Got a GET request for /ab*cd");
+    res.send('Page Pattern Match');
+});
+var server = app.listen(8081, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+    console.log("Example app listening at http://%s:%s", host, port);
+});
