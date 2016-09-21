@@ -1,7 +1,7 @@
 /// <reference path="./../typings/tsd.d.ts" />
 var express = require('express');
 var app = express();
-var mysql = require('mysql');
+var mysql = require('mysql'); // Mysql conection guide https://www.codementor.io/nodejs/tutorial/node-js-mysql
 var pool = mysql.createPool({
     connectionLimit: 100,
     host: 'localhost',
