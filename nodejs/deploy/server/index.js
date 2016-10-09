@@ -12,8 +12,8 @@ var modem = require('modem').Modem();
 // });
 modem.open('COM39', function () {
     modem.sms({
-        receiver: '923155923218',
-        text: 'hello saad this is mode generated sms',
+        receiver: '923150208667',
+        text: 'say ok to 031502028667',
         encoding: '16bit'
     }, function (err, sent_ids) {
         console.log('>>', arguments);
